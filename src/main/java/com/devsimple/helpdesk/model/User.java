@@ -30,7 +30,7 @@ public abstract class User implements Serializable {
     @CollectionTable(name = "profiles")
     protected Set<Integer> profiles = new HashSet<>();
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     protected LocalDate dateCadastre = LocalDate.now();
 
     public User() {

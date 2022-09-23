@@ -1,6 +1,7 @@
 package com.devsimple.helpdesk.model;
 
 import com.devsimple.helpdesk.model.enums.Profile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -11,6 +12,7 @@ import java.util.List;
 public class Client extends User {
     private static final long serialVersionUID = 1l;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "client")
     private List<Called> calleds = new ArrayList<>();
 

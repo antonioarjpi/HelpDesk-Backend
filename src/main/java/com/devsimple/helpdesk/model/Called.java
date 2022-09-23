@@ -19,10 +19,10 @@ public class Called implements Serializable {
     private String id;
     private String title;
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate openDate = LocalDate.now();
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate closeDate;
     private String observation;
     private Priority priority;
