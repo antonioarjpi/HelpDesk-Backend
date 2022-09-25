@@ -2,6 +2,7 @@ package com.devsimple.helpdesk.model;
 
 import com.devsimple.helpdesk.model.enums.Profile;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +25,8 @@ public abstract class User implements Serializable {
 
     @Column(unique = true)
     protected String email;
+
+    @JsonIgnore
     protected String password;
 
     @ElementCollection(fetch = FetchType.EAGER) //Coleção de elementos do tipo integer

@@ -35,4 +35,10 @@ public class ClientService {
                 .map(x -> new ClientDTO(x))
                 .collect(Collectors.toList());
     }
+
+    public Client save(ClientDTO clientDTO) {
+        clientDTO.setId(getUUid());
+        Client client = new Client(clientDTO);
+        return repository.save(client);
+    }
 }

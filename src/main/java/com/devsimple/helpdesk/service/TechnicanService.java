@@ -19,20 +19,26 @@ public class TechnicanService {
         this.repository = repository;
     }
 
-    public static String getUUid(){
+    public static String getUUid() {
         return UUID.randomUUID().toString().replace("-", " ");
     }
 
-    public TechnicianDTO findById(String id){
+    public TechnicianDTO findById(String id) {
         Technician technician = repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Técnico não encontrado"));
         return new TechnicianDTO(technician);
     }
 
-    public List<TechnicianDTO> findAll(){
+    public List<TechnicianDTO> findAll() {
         return repository.findAll()
                 .stream()
                 .map(x -> new TechnicianDTO(x))
                 .collect(Collectors.toList());
+    }
+
+    public Technician save(TechnicianDTO technicianDTO) {
+        technicianDTO.setId(getUUid());
+        Technician technician = new Technician(technicianDTO);
+        return repository.save(technician);
     }
 }

@@ -1,13 +1,13 @@
 package com.devsimple.helpdesk.controller;
 
 import com.devsimple.helpdesk.dto.ClientDTO;
+import com.devsimple.helpdesk.model.Client;
 import com.devsimple.helpdesk.service.ClientService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,5 +28,10 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<List<ClientDTO>> findAll() {
         return ResponseEntity.ok(service.findAll());
+    }
+
+    @PostMapping
+    public ResponseEntity<Client> save(@Valid @RequestBody ClientDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
     }
 }
