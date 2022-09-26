@@ -1,12 +1,16 @@
 package com.devsimple.helpdesk.service;
 
 import com.devsimple.helpdesk.dto.TechnicianDTO;
+import com.devsimple.helpdesk.exceptions.DataIntegratyViolationException;
 import com.devsimple.helpdesk.exceptions.ObjectNotFoundException;
 import com.devsimple.helpdesk.model.Technician;
+import com.devsimple.helpdesk.model.User;
 import com.devsimple.helpdesk.repository.TechnicianRepository;
+import com.devsimple.helpdesk.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -14,9 +18,11 @@ import java.util.stream.Collectors;
 public class TechnicanService {
 
     private TechnicianRepository repository;
+    private UserRepository userRepository;
 
-    public TechnicanService(TechnicianRepository repository) {
+    public TechnicanService(TechnicianRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
     }
 
     public static String getUUid() {
@@ -38,7 +44,19 @@ public class TechnicanService {
 
     public Technician save(TechnicianDTO technicianDTO) {
         technicianDTO.setId(getUUid());
+        validateCPFandEmail(technicianDTO);
         Technician technician = new Technician(technicianDTO);
         return repository.save(technician);
+    }
+
+    private void validateCPFandEmail(TechnicianDTO dto) {
+        Optional<User> byCpf = userRepository.findByCpf(dto.getCpf());
+        if (byCpf.isPresent() && byCpf.get().getId() != dto.getId()) {
+            throw new DataIntegratyViolationException("CPF já cadastrado");
+        }
+        Optional<User> byEmail = userRepository.findByEmail(dto.getEmail());
+        if (byEmail.isPresent()) {
+            throw new DataIntegratyViolationException("E-mail já cadastrado");
+        }
     }
 }
