@@ -19,16 +19,16 @@ public class TechnicianDTO implements Serializable {
 
     private String id;
 
-    @NotBlank
+    @NotBlank(message = "O campo nome é obrigatório")
     private String name;
 
-    @CPF
+    @CPF(message = "CPF inválido")
     private String cpf;
 
-    @Email
+    @Email(message = "E-mail inválido")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "O campo senha é obrigatório")
     @Size(min = 4, max = 16, message = "Senha precisa ter 4 a 16 caracteres")
     private String password;
 

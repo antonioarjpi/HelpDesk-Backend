@@ -20,7 +20,7 @@ public class ClientDTO implements Serializable {
 
     private String id;
 
-    @NotBlank
+    @NotBlank(message = "O campo nome é obrigatório")
     private String name;
 
     @CPF(message = "CPF inválido")
@@ -29,7 +29,7 @@ public class ClientDTO implements Serializable {
     @Email(message = "e-mail inválido")
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "O campo senha é obrigatório")
     @Size(min = 4, max = 16, message = "Senha precisa ter 4 a 16 caracteres")
     private String password;
 
