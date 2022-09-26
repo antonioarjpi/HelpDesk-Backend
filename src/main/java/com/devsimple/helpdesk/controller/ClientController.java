@@ -22,7 +22,7 @@ public class ClientController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ClientDTO> findById(@PathVariable String id) {
-        return ResponseEntity.ok(service.findById(id));
+        return ResponseEntity.ok(service.findByIdDTO(id));
     }
 
     @GetMapping
@@ -33,5 +33,10 @@ public class ClientController {
     @PostMapping
     public ResponseEntity<Client> save(@Valid @RequestBody ClientDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.save(dto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Client> update(@PathVariable String id, @Valid @RequestBody ClientDTO dto){
+        return ResponseEntity.ok(service.update(id, dto));
     }
 }

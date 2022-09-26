@@ -8,6 +8,7 @@ import com.devsimple.helpdesk.model.User;
 import com.devsimple.helpdesk.repository.TechnicianRepository;
 import com.devsimple.helpdesk.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,15 +27,16 @@ public class TechnicanService {
     }
 
     public static String getUUid() {
-        return UUID.randomUUID().toString().replace("-", " ");
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
-    public TechnicianDTO findById(String id) {
+    public TechnicianDTO findByIdDTO(String id) {
         Technician technician = repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Técnico não encontrado"));
         return new TechnicianDTO(technician);
     }
 
+    @Transactional
     public List<TechnicianDTO> findAll() {
         return repository.findAll()
                 .stream()
@@ -42,11 +44,26 @@ public class TechnicanService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public Technician save(TechnicianDTO technicianDTO) {
         technicianDTO.setId(getUUid());
         validateCPFandEmail(technicianDTO);
         Technician technician = new Technician(technicianDTO);
         return repository.save(technician);
+    }
+
+    @Transactional
+    public Technician update(String id, TechnicianDTO dto) {
+        dto.setId(id);
+        Technician oldTech = findById(id);
+        validateCPFandEmail(dto);
+        oldTech = new Technician(dto);
+        return repository.save(oldTech);
+    }
+
+    private Technician findById(String id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ObjectNotFoundException("Técnico não encontrado"));
     }
 
     private void validateCPFandEmail(TechnicianDTO dto) {
@@ -55,7 +72,7 @@ public class TechnicanService {
             throw new DataIntegratyViolationException("CPF já cadastrado");
         }
         Optional<User> byEmail = userRepository.findByEmail(dto.getEmail());
-        if (byEmail.isPresent()) {
+        if (byEmail.isPresent() && byCpf.get().getId() != dto.getId()) {
             throw new DataIntegratyViolationException("E-mail já cadastrado");
         }
     }

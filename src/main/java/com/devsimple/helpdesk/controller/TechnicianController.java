@@ -21,7 +21,7 @@ public class TechnicianController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TechnicianDTO> findById(@PathVariable String id) {
-        return ResponseEntity.ok(service.findById(id));
+        return ResponseEntity.ok(service.findByIdDTO(id));
     }
 
     @GetMapping
@@ -32,5 +32,10 @@ public class TechnicianController {
     @PostMapping
     public ResponseEntity<Technician> save(@Valid @RequestBody TechnicianDTO technicianDTO) {
         return ResponseEntity.ok(service.save(technicianDTO));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Technician> update(@PathVariable String id, @Valid @RequestBody TechnicianDTO dto){
+        return ResponseEntity.ok().body(service.update(id, dto));
     }
 }
