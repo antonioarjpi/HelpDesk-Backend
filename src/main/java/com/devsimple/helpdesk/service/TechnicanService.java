@@ -61,6 +61,15 @@ public class TechnicanService {
         return repository.save(oldTech);
     }
 
+    @Transactional
+    public void delete(String id){
+        Technician findTechnician = findById(id);
+        if (findTechnician.getCalleds().size() > 0){
+            throw new DataIntegratyViolationException("Técnico que possui chamados não pode ser deletado.");
+        }
+        repository.deleteById(id);
+    }
+
     private Technician findById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Técnico não encontrado"));

@@ -39,4 +39,10 @@ public class ClientController {
     public ResponseEntity<Client> update(@PathVariable String id, @Valid @RequestBody ClientDTO dto){
         return ResponseEntity.ok(service.update(id, dto));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id){
+        service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

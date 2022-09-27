@@ -61,6 +61,15 @@ public class ClientService {
         return repository.save(oldClient);
     }
 
+    @Transactional
+    public void delete(String id){
+        Client findClient = findById(id);
+        if (findClient.getCalleds().size() > 0){
+            throw new DataIntegratyViolationException("Cliente que possui chamados não pode ser deletado");
+        }
+        repository.deleteById(id);
+    }
+
     private Client findById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Cliente não encontrado"));
