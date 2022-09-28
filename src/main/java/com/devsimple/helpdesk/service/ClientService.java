@@ -30,9 +30,13 @@ public class ClientService {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    public ClientDTO findByIdDTO(String id) {
-        Client client = repository.findById(id)
+    public Client findById(String id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Cliente não encontrado"));
+    }
+
+    public ClientDTO findByIdDTO(String id) {
+        Client client = findById(id);
         return new ClientDTO(client);
     }
 
@@ -68,11 +72,6 @@ public class ClientService {
             throw new DataIntegratyViolationException("Cliente que possui chamados não pode ser deletado");
         }
         repository.deleteById(id);
-    }
-
-    private Client findById(String id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Cliente não encontrado"));
     }
 
     private void validateCPFandEmail(ClientDTO dto) {

@@ -1,5 +1,6 @@
 package com.devsimple.helpdesk.model;
 
+import com.devsimple.helpdesk.dto.CalledDTO;
 import com.devsimple.helpdesk.model.enums.Priority;
 import com.devsimple.helpdesk.model.enums.Status;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -47,6 +48,12 @@ public class Called implements Serializable {
         this.status = status;
         this.technician = technician;
         this.client = client;
+    }
+
+    public Called(CalledDTO dto) {
+        this.id = dto.getId();
+        this.title = dto.getTitle();
+        this.observation = dto.getObservation();
     }
 
     public String getId() {

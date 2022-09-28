@@ -30,9 +30,13 @@ public class TechnicanService {
         return UUID.randomUUID().toString().replace("-", "");
     }
 
-    public TechnicianDTO findByIdDTO(String id) {
-        Technician technician = repository.findById(id)
+    public Technician findById(String id) {
+        return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Técnico não encontrado"));
+    }
+
+    public TechnicianDTO findByIdDTO(String id) {
+        Technician technician = findById(id);
         return new TechnicianDTO(technician);
     }
 
@@ -68,11 +72,6 @@ public class TechnicanService {
             throw new DataIntegratyViolationException("Técnico que possui chamados não pode ser deletado.");
         }
         repository.deleteById(id);
-    }
-
-    private Technician findById(String id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("Técnico não encontrado"));
     }
 
     private void validateCPFandEmail(TechnicianDTO dto) {
