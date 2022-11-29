@@ -7,6 +7,7 @@ import com.devsimple.helpdesk.model.Technician;
 import com.devsimple.helpdesk.model.User;
 import com.devsimple.helpdesk.repository.TechnicianRepository;
 import com.devsimple.helpdesk.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +21,12 @@ public class TechnicanService {
 
     private TechnicianRepository repository;
     private UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    public TechnicanService(TechnicianRepository repository, UserRepository userRepository) {
+    public TechnicanService(TechnicianRepository repository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public static String getUUid() {
@@ -51,6 +54,7 @@ public class TechnicanService {
     @Transactional
     public Technician save(TechnicianDTO technicianDTO) {
         technicianDTO.setId(getUUid());
+        technicianDTO.setPassword(passwordEncoder.encode(technicianDTO.getPassword()));
         validateCPFandEmail(technicianDTO);
         Technician technician = new Technician(technicianDTO);
         return repository.save(technician);

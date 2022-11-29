@@ -7,6 +7,7 @@ import com.devsimple.helpdesk.model.Client;
 import com.devsimple.helpdesk.model.User;
 import com.devsimple.helpdesk.repository.ClientRepository;
 import com.devsimple.helpdesk.repository.UserRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +21,12 @@ public class ClientService {
 
     private ClientRepository repository;
     private UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    public ClientService(ClientRepository repository, UserRepository userRepository) {
+    public ClientService(ClientRepository repository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public static String getUUid() {
@@ -51,6 +54,7 @@ public class ClientService {
     @Transactional
     public Client save(ClientDTO clientDTO) {
         clientDTO.setId(getUUid());
+        clientDTO.setPassword(passwordEncoder.encode(clientDTO.getPassword()));
         validateCPFandEmail(clientDTO);
         Client client = new Client(clientDTO);
         return repository.save(client);
