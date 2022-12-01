@@ -3,7 +3,7 @@ package com.devsimple.helpdesk.dto;
 import com.devsimple.helpdesk.model.Client;
 import com.devsimple.helpdesk.model.enums.Profile;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.Email;
@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ClientDTO implements Serializable {
     private static final long serialVersionUID = 1l;
 
@@ -46,7 +47,6 @@ public class ClientDTO implements Serializable {
         this.name = client.getName();
         this.cpf = client.getCpf();
         this.email = client.getEmail();
-        this.password = client.getPassword();
         this.profiles = client.getProfiles().stream().map(x -> x.getCode()).collect(Collectors.toSet());
         this.dateCadastre = client.getDateCadastre();
     }

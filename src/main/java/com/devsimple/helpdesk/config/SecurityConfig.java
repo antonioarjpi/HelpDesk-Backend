@@ -1,9 +1,9 @@
 package com.devsimple.helpdesk.config;
 
+
 import com.devsimple.helpdesk.security.JWTAuthenticationFilter;
 import com.devsimple.helpdesk.security.JWTAuthorizationFilter;
 import com.devsimple.helpdesk.security.JWTUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
@@ -22,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private Environment environment;

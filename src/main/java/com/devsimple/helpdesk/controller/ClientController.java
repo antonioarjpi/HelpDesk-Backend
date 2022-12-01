@@ -5,6 +5,7 @@ import com.devsimple.helpdesk.model.Client;
 import com.devsimple.helpdesk.service.ClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +26,7 @@ public class ClientController {
         return ResponseEntity.ok(service.findByIdDTO(id));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN') or hasAnyRole('TECH')")
     @GetMapping
     public ResponseEntity<List<ClientDTO>> findAll() {
         return ResponseEntity.ok(service.findAll());

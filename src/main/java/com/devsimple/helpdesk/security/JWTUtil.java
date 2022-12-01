@@ -19,41 +19,36 @@ public class JWTUtil {
     private Long expiration;
 
     @Value("${jwt.access-key}")
-    private String accessKey;
+    private String secret;
 
-    public String generateToken(User user) {
+    public String generateToken(String username) {
         return Jwts.builder()
+                .setSubject(username)
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .setSubject(user.getEmail())
-                .claim("id", user.getId())
-                .signWith(SignatureAlgorithm.HS512, accessKey)
+                .signWith(SignatureAlgorithm.HS512, secret.getBytes())
                 .compact();
     }
+
 
     public Claims getClaims(String token) throws ExpiredJwtException {
         return Jwts
                 .parser()
-                .setSigningKey(accessKey)
+                .setSigningKey(secret.getBytes())
                 .parseClaimsJws(token)
                 .getBody();
     }
 
     public boolean isTokenValid(String token) {
-        try {
-            Claims claims = getClaims(token);
-            if(claims != null) {
-                String username = claims.getSubject();
-                Date expirationDate = claims.getExpiration();
-                Date now = new Date(System.currentTimeMillis());
-
-                if(username != null && expirationDate != null && now.before(expirationDate)) {
-                    return true;
-                }
+        Claims claims = getClaims(token);
+        if (claims != null) {
+            String username = claims.getSubject();
+            Date expirationDate = claims.getExpiration();
+            Date agora = new Date(System.currentTimeMillis());
+            if (username != null && expirationDate != null && agora.before(expirationDate)) {
+                return true;
             }
-            return false;
-        }catch(ExpiredJwtException e) {
-            return false;
         }
+        return false;
     }
 
     public String getUsername(String token) {

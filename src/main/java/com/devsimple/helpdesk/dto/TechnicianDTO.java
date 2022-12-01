@@ -3,6 +3,7 @@ package com.devsimple.helpdesk.dto;
 import com.devsimple.helpdesk.model.Technician;
 import com.devsimple.helpdesk.model.enums.Profile;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.Email;
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TechnicianDTO implements Serializable {
     private static final long serialVersionUID = 1l;
 
@@ -45,7 +47,6 @@ public class TechnicianDTO implements Serializable {
         this.name = technician.getName();
         this.cpf = technician.getCpf();
         this.email = technician.getEmail();
-        this.password = technician.getPassword();
         this.profiles = technician.getProfiles().stream().map(x -> x.getCode()).collect(Collectors.toSet());
         this.dateCadastre = technician.getDateCadastre();
     }
