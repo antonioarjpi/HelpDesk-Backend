@@ -3,6 +3,8 @@ package com.devsimple.helpdesk.model;
 import com.devsimple.helpdesk.model.enums.Profile;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +15,9 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "tb_user")
-public abstract class User implements Serializable {
+@Builder
+@AllArgsConstructor
+public class User implements Serializable {
     private static final long serialVersionUID = 1l;
 
     @Id
