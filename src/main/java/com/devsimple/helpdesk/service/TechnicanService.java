@@ -63,6 +63,7 @@ public class TechnicanService {
     @Transactional
     public Technician update(String id, TechnicianDTO dto) {
         dto.setId(id);
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         Technician oldTech = findById(id);
         validateCPFandEmail(dto);
         oldTech = new Technician(dto);
@@ -79,12 +80,12 @@ public class TechnicanService {
     }
 
     private void validateCPFandEmail(TechnicianDTO dto) {
-        Optional<User> byCpf = userRepository.findByCpf(dto.getCpf());
-        if (byCpf.isPresent() && byCpf.get().getId() != dto.getId()) {
+        Optional<User> userOptional = userRepository.findByCpf(dto.getCpf());
+        if (userOptional.isPresent() && userOptional.get().getId() != dto.getId()) {
             throw new DataIntegratyViolationException("CPF já cadastrado");
         }
-        Optional<User> byEmail = userRepository.findByEmail(dto.getEmail());
-        if (byEmail.isPresent() && byCpf.get().getId() != dto.getId()) {
+        userOptional = userRepository.findByEmail(dto.getEmail());
+        if (userOptional.isPresent() && userOptional.get().getId() != dto.getId()) {
             throw new DataIntegratyViolationException("E-mail já cadastrado");
         }
     }

@@ -52,6 +52,7 @@ public class CalledService {
 
     @Transactional
     public Called save(CalledCreateDTO calledDTO) {
+        calledDTO.setId(getUUid());
         return repository.save(newCalled(calledDTO));
     }
 

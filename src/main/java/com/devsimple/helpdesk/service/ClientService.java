@@ -63,6 +63,7 @@ public class ClientService {
     @Transactional
     public Client update(String id, ClientDTO dto) {
         dto.setId(id);
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         Client oldClient = findById(id);
         validateCPFandEmail(dto);
         oldClient = new Client(dto);
