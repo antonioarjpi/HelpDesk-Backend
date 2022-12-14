@@ -1,6 +1,7 @@
 package com.devsimple.helpdesk.controller;
 
 import com.devsimple.helpdesk.dto.TechnicianDTO;
+import com.devsimple.helpdesk.dto.TechnicianUpdateDTO;
 import com.devsimple.helpdesk.model.Technician;
 import com.devsimple.helpdesk.service.TechnicanService;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class TechnicianController {
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<Technician> update(@PathVariable String id, @Valid @RequestBody TechnicianDTO dto){
+    public ResponseEntity<Technician> update(@PathVariable String id, @Valid @RequestBody TechnicianUpdateDTO dto){
         return ResponseEntity.ok().body(service.update(id, dto));
     }
 

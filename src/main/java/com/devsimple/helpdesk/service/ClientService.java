@@ -1,6 +1,7 @@
 package com.devsimple.helpdesk.service;
 
 import com.devsimple.helpdesk.dto.ClientDTO;
+import com.devsimple.helpdesk.dto.ClientUpdateDTO;
 import com.devsimple.helpdesk.exceptions.DataIntegratyViolationException;
 import com.devsimple.helpdesk.exceptions.ObjectNotFoundException;
 import com.devsimple.helpdesk.model.Client;
@@ -61,12 +62,13 @@ public class ClientService {
     }
 
     @Transactional
-    public Client update(String id, ClientDTO dto) {
+    public Client update(String id, ClientUpdateDTO dto) {
         dto.setId(id);
-        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         Client oldClient = findById(id);
-        validateCPFandEmail(dto);
+        String password = oldClient.getPassword();
+        validateCPFandEmailUpdate(dto);
         oldClient = new Client(dto);
+        oldClient.setPassword(password);
         return repository.save(oldClient);
     }
 
@@ -86,6 +88,17 @@ public class ClientService {
         }
         Optional<User> byEmail = userRepository.findByEmail(dto.getEmail());
         if (byEmail.isPresent() && byCpf.get().getId() != dto.getId()) {
+            throw new DataIntegratyViolationException("E-mail já cadastrado");
+        }
+    }
+
+    private void validateCPFandEmailUpdate(ClientUpdateDTO dto) {
+        Optional<User> byCpf = userRepository.findByCpf(dto.getCpf());
+        if (byCpf.isPresent() && byCpf.get().getId() != dto.getId()) {
+            throw new DataIntegratyViolationException("CPF já cadastrado");
+        }
+        Optional<User> byEmail = userRepository.findByEmail(dto.getEmail());
+        if (byEmail.isPresent() && byEmail.get().getId() != dto.getId()) {
             throw new DataIntegratyViolationException("E-mail já cadastrado");
         }
     }

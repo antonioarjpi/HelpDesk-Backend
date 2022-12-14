@@ -1,6 +1,7 @@
 package com.devsimple.helpdesk.controller;
 
 import com.devsimple.helpdesk.dto.ClientDTO;
+import com.devsimple.helpdesk.dto.ClientUpdateDTO;
 import com.devsimple.helpdesk.model.Client;
 import com.devsimple.helpdesk.service.ClientService;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Client> update(@PathVariable String id, @Valid @RequestBody ClientDTO dto){
+    public ResponseEntity<Client> update(@PathVariable String id, @Valid @RequestBody ClientUpdateDTO dto){
         return ResponseEntity.ok(service.update(id, dto));
     }
 

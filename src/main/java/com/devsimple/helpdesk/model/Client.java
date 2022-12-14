@@ -1,6 +1,7 @@
 package com.devsimple.helpdesk.model;
 
 import com.devsimple.helpdesk.dto.ClientDTO;
+import com.devsimple.helpdesk.dto.ClientUpdateDTO;
 import com.devsimple.helpdesk.model.enums.Profile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -39,6 +40,16 @@ public class Client extends User {
         this.cpf = dto.getCpf();
         this.email = dto.getEmail();
         this.password = dto.getPassword();
+        this.profiles = dto.getProfiles().stream().map(x -> x.getCode()).collect(Collectors.toSet());
+        this.dateCadastre = dto.getDateCadastre();
+        addProfile(Profile.CLIENT);
+    }
+
+    public Client(ClientUpdateDTO dto) {
+        this.id = dto.getId();
+        this.name = dto.getName();
+        this.cpf = dto.getCpf();
+        this.email = dto.getEmail();
         this.profiles = dto.getProfiles().stream().map(x -> x.getCode()).collect(Collectors.toSet());
         this.dateCadastre = dto.getDateCadastre();
         addProfile(Profile.CLIENT);

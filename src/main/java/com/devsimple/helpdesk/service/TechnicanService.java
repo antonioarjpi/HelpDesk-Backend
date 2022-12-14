@@ -1,6 +1,7 @@
 package com.devsimple.helpdesk.service;
 
 import com.devsimple.helpdesk.dto.TechnicianDTO;
+import com.devsimple.helpdesk.dto.TechnicianUpdateDTO;
 import com.devsimple.helpdesk.exceptions.DataIntegratyViolationException;
 import com.devsimple.helpdesk.exceptions.ObjectNotFoundException;
 import com.devsimple.helpdesk.model.Technician;
@@ -61,12 +62,13 @@ public class TechnicanService {
     }
 
     @Transactional
-    public Technician update(String id, TechnicianDTO dto) {
+    public Technician update(String id, TechnicianUpdateDTO dto) {
         dto.setId(id);
-        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         Technician oldTech = findById(id);
-        validateCPFandEmail(dto);
+        String password = oldTech.getPassword();
+        validateCPFandEmailUpdate(dto);
         oldTech = new Technician(dto);
+        oldTech.setPassword(password);
         return repository.save(oldTech);
     }
 
@@ -80,6 +82,17 @@ public class TechnicanService {
     }
 
     private void validateCPFandEmail(TechnicianDTO dto) {
+        Optional<User> userOptional = userRepository.findByCpf(dto.getCpf());
+        if (userOptional.isPresent() && userOptional.get().getId() != dto.getId()) {
+            throw new DataIntegratyViolationException("CPF já cadastrado");
+        }
+        userOptional = userRepository.findByEmail(dto.getEmail());
+        if (userOptional.isPresent() && userOptional.get().getId() != dto.getId()) {
+            throw new DataIntegratyViolationException("E-mail já cadastrado");
+        }
+    }
+
+    private void validateCPFandEmailUpdate(TechnicianUpdateDTO dto) {
         Optional<User> userOptional = userRepository.findByCpf(dto.getCpf());
         if (userOptional.isPresent() && userOptional.get().getId() != dto.getId()) {
             throw new DataIntegratyViolationException("CPF já cadastrado");
