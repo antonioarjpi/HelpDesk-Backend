@@ -60,6 +60,9 @@ public class CalledService {
     public Called update(String id, CalledCreateDTO calledCreateDTO){
         calledCreateDTO.setId(id);
         Called findCalled = findById(id);
+        if(calledCreateDTO.getStatus() == 2){
+            findCalled.setCloseDate(LocalDate.now());
+        }
         calledCreateDTO.setOpenDate(findCalled.getOpenDate());
         findCalled = newCalled(calledCreateDTO);
         return repository.save(findCalled);
@@ -69,15 +72,14 @@ public class CalledService {
         Called called = new Called();
         Technician findTechnician = technicanService.findById(calledDTO.getTechnician());
         Client findClient = clientService.findById(calledDTO.getClient());
+
         if (calledDTO.getId() != null) {
             called.setId(calledDTO.getId());
-            called.setOpenDate(calledDTO.getOpenDate());
-        } else {
-            called.setId(getUUid());
         }
-        if(calledDTO.getStatus() == 2){
+        if(calledDTO.getStatus().equals(2)){
             called.setCloseDate(LocalDate.now());
         }
+
         called.setTitle(calledDTO.getTitle());
         called.setClient(findClient);
         called.setTechnician(findTechnician);
@@ -87,15 +89,7 @@ public class CalledService {
         return called;
     }
 
-    @Transactional
-    public Called update(String id, CalledDTO dto) {
-        dto.setId(id);
-        Called oldCalled = findById(id);
-        oldCalled = new Called(dto);
-        return repository.save(oldCalled);
-    }
-
-    private Called findById(String id) {
+    public Called findById(String id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ObjectNotFoundException("Chamado não encontrado"));
     }
