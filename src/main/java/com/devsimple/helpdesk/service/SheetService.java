@@ -1,10 +1,12 @@
 package com.devsimple.helpdesk.service;
 
 import com.devsimple.helpdesk.dto.CalledDTO;
-import com.devsimple.helpdesk.model.Called;
+import com.devsimple.helpdesk.dto.ClientDTO;
+import com.devsimple.helpdesk.dto.TechnicianDTO;
 import com.devsimple.helpdesk.repository.CalledRepository;
+import com.devsimple.helpdesk.repository.ClientRepository;
+import com.devsimple.helpdesk.repository.TechnicianRepository;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +19,77 @@ import java.util.stream.Collectors;
 public class SheetService {
 
     private CalledRepository calledRepository;
+    private ClientRepository clientRepository;
+    private TechnicianRepository technicianRepository;
 
-    public SheetService(CalledRepository calledRepository) {
+    public SheetService(CalledRepository calledRepository, ClientRepository clientRepository, TechnicianRepository technicianRepository) {
         this.calledRepository = calledRepository;
+        this.clientRepository = clientRepository;
+        this.technicianRepository = technicianRepository;
+    }
+
+    public void sheetsAllClients() throws Throwable {
+        List<ClientDTO> clients = clientRepository.findAll()
+                .stream()
+                .map(x -> new ClientDTO(x))
+                .collect(Collectors.toList());
+
+        try (var workbook = new XSSFWorkbook();
+             var outputStream = new FileOutputStream("clients.xlsx")) {
+            var sheet = workbook.createSheet("Planilha 1");
+            int numberLine = 0;
+
+            List<String> header = new ArrayList<>();
+            header.add("Nome");
+            header.add("E-mail");
+            header.add("CPF");
+            header.add("Data de cadastro");
+
+            addHeader(sheet, numberLine++, header, workbook);
+
+            for (ClientDTO dto : clients) {
+                var line = sheet.createRow(numberLine++);
+                addCell(line, 0, dto.getName());
+                addCell(line, 1, dto.getEmail());
+                addCell(line, 2, dto.getCpf());
+                addCell(line, 3, dto.getDateCadastre().toString());
+            }
+            workbook.write(outputStream);
+        } catch (Exception e) {
+            throw new Exception().getCause();
+        }
+    }
+
+    public void sheetsAllTechnicians() throws Throwable {
+        List<TechnicianDTO> technicians = technicianRepository.findAll()
+                .stream()
+                .map(x -> new TechnicianDTO(x))
+                .collect(Collectors.toList());
+
+        try (var workbook = new XSSFWorkbook();
+             var outputStream = new FileOutputStream("technicians.xlsx")) {
+            var sheet = workbook.createSheet("Planilha 1");
+            int numberLine = 0;
+
+            List<String> header = new ArrayList<>();
+            header.add("Nome");
+            header.add("E-mail");
+            header.add("CPF");
+            header.add("Data de cadastro");
+
+            addHeader(sheet, numberLine++, header, workbook);
+
+            for (TechnicianDTO dto : technicians) {
+                var line = sheet.createRow(numberLine++);
+                addCell(line, 0, dto.getName());
+                addCell(line, 1, dto.getEmail());
+                addCell(line, 2, dto.getCpf());
+                addCell(line, 3, dto.getDateCadastre().toString());
+            }
+            workbook.write(outputStream);
+        } catch (Exception e) {
+            throw new Exception().getCause();
+        }
     }
 
     public void sheetsAllCalled() throws Throwable {
@@ -31,7 +101,6 @@ public class SheetService {
         try (var workbook = new XSSFWorkbook();
              var outputStream = new FileOutputStream("calleds.xlsx")) {
             var sheet = workbook.createSheet("Planilha 1");
-            sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 9));
             int numberLine = 0;
 
             List<String> header = new ArrayList<>();
